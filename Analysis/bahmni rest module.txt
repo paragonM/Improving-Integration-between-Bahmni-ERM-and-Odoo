@@ -1,0 +1,10 @@
+https://wiki.openmrs.org/display/docs/REST+Module
+
+What this module does
+The module exposes the OpenMRS API as REST web services.  If an OpenMRS instance is running the Webservices.REST module, other programs (and languages) can connect to retrieve and post certain information to an OpenMRS database.
+
+
+Technical Documentation
+The module exposes the OpenMRS API through light-weight resource objects off of the core OpenMRS objects. The structure is very similar, but not guaranteed to match up exactly.
+
+This module uses Spring 3 annotations to expose URLs. Primary transport language is currently JSON and XML (beta in 2.1).

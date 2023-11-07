@@ -1,0 +1,13 @@
+The benefits of eRecord systems are well documented, particularly the prevention of duplicate tests and improved quality of care related to accessing patient information between different sites as and when required
+
+. Health Europa. Digitalising the healthcare ecosystem in the European Union. Health Europa. 2020. https://www.healtheuropa.eu/digitalising-the-healthcare-ecosystem-in-the-european-union/100949/. Accessed 25 Mar 2021. [Ref list]
+
+ Linking of mHealth applications and eRecord systems should result in seamless data exchange within a healthcare community with subsequent benefit
+
+Despite widespread adoption, interoperability of mHealth applications and eRecord systems remains a global challenge [14]. Interoperability is broad and has numerous definitions. 
+
+the ability of different information systems, devices and applications (‘systems’) to access, exchange, integrate and cooperatively use data in a coordinated manner, within and across organizational, regional and national boundaries, to provide timely and seamless portability of information and optimize the health of individuals and populations globally  Healthcare Information and Management Systems Society (HIMSS). Interoperability in Healthcare | What is Interoperability. [Internet]. 2021. https://www.himss.org/resources/interoperability-healthcare. Accessed 25 Mar 2021. [Ref list]
+
+The implementation and adoption of eRecord systems and mHealth applications in SSA has been slow and the systems that are in place have usually been developed by donors for a single problem, such as HIV/AIDS, tuberculosis, or malaria. This has resulted in silos of eRecord systems often containing similar data on the same patients, and extensive ‘donor-driven pilotitis’
+
+ISO/IEEE 11073 (Personal Health Device)
