@@ -27,4 +27,8 @@ public class RespartnerService {
     public List<ResPartner> findAllEmployee() {
         return resRepo.findAll();
     }
+    public List<ResPartner> findbyuuid(String uuidString) {
+        return resRepo.findByuuid(uuidString);
+    }
+    
 }

@@ -11,8 +11,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class ResPartnerClass {
-
-public String id;
+public Integer person_id;
+public Integer id;
 public String peresonid;
 public String name; 
 public String company_id;

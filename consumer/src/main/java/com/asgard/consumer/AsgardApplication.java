@@ -4,10 +4,14 @@ import java.util.List;
 import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.annotation.RetryableTopic;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,7 +29,6 @@ public class AsgardApplication {
 
 
 
-
 	public ResPartner resPartner;
 	private final RespartnerService respartnerService;
 
@@ -39,22 +42,10 @@ public class AsgardApplication {
          respartnerService.insert(resPartner);
     }
 
-	Integer FindId(List<ResPartner> dump,String uuid){
-		Integer identification = 0 ;
-		Integer id = 0;
-		for(int i=0;i<= dump.size();i++){
-			if(Objects.equals(uuid, dump.get(i).getUuid())){
-				identification = dump.get(i).getId();
-				return identification;
-			}
-			else{
-			
-				return identification;
+	int lock = 1;
+	int lock2 = 1;
+	int lock3 = 1;
 
-			}
-		}
-		return 0;
-	}
 
 
 
@@ -72,8 +63,7 @@ public class AsgardApplication {
 	List<User> patientlist = new ArrayList<>();
 	List<ResPartnerClass> resp = new ArrayList<>();
 	List<ResPartner> resPartners = new ArrayList<>();
-
-	
+	List<ResPartner> list = new ArrayList<>() ;
 
 	public List<User> userFromTopic = new ArrayList<>();
 
@@ -89,16 +79,6 @@ public class AsgardApplication {
     public List<ResPartner> findAllEmployee() {
         return respartnerService.findAllEmployee();
     }
-
-
-	@GetMapping("/ress")
-	public List<ResPartner> resPartner2(){
-		ResPartner resser = new ResPartner();
-		resser.setName("Moeling lehloho");
-		save(resser);	
-		resPartners.add(resser);
-		return resPartners;
-	}
 
 
 	@GetMapping("/users")
@@ -162,41 +142,41 @@ public class AsgardApplication {
 	}
 
 
-	@KafkaListener(groupId = "consumergroup", topics = "asgard.openmrs.visit", containerFactory = "userKafkaListenerContainerFactory")
+	@KafkaListener(groupId = "odin23", topics = "asgard.openmrs.visit", containerFactory = "userKafkaListenerContainerFactory")
 	public List<User> visit(User visitstring) {
 		visitlist.add(visitstring);
 		return visitlist;
 	}
 
-	@KafkaListener(groupId = "consumergroup", topics = "asgard.openmrs.users", containerFactory = "userKafkaListenerContainerFactory")
+	@KafkaListener(groupId = "odin23", topics = "asgard.openmrs.users", containerFactory = "userKafkaListenerContainerFactory")
 	public List<User> users(User userstring) {
 		userslist.add(userstring);
 		return userslist;
 	}
 
 
-	@KafkaListener(groupId = "consumergroup", topics = "asgard.openmrs.person_attribute", containerFactory = "userKafkaListenerContainerFactory")
+	@KafkaListener(groupId = "odin23", topics = "asgard.openmrs.person_attribute", containerFactory = "userKafkaListenerContainerFactory")
 	public List<User> personattribute(User personattributestring) {
 		personattributelist.add(personattributestring);
 		return personattributelist;
 	}
 
 
-	@KafkaListener(groupId = "consumergroup", topics = "asgard.openmrs.privilege", containerFactory = "userKafkaListenerContainerFactory")
+	@KafkaListener(groupId = "odin23", topics = "asgard.openmrs.privilege", containerFactory = "userKafkaListenerContainerFactory")
 	public List<User> privelage(User privelagesstring) {
 		privilagelist.add(privelagesstring);
 		return privilagelist;
 	}
 
 
-	@KafkaListener(groupId = "consumergroup", topics = "asgard.openmrs.patient_program", containerFactory = "userKafkaListenerContainerFactory")
+	@KafkaListener(groupId = "odin23", topics = "asgard.openmrs.patient_program", containerFactory = "userKafkaListenerContainerFactory")
 	public List<User> patientprogram(User patientprogramsstring) {
 		patientprogramlist.add(patientprogramsstring);
 		return patientprogramlist;
 	}
 
 
-	@KafkaListener(groupId = "consumergroup", topics = "asgard.openmrs.patient_identifier_type", containerFactory = "userKafkaListenerContainerFactory")
+	@KafkaListener(groupId = "odin23", topics = "asgard.openmrs.patient_identifier_type", containerFactory = "userKafkaListenerContainerFactory")
 	public List<User> patientidentifiertype(User patientidentifiertypesString) {
 		patientidentifiertypelist.add(patientidentifiertypesString);
 		return patientidentifiertypelist;
@@ -205,66 +185,130 @@ public class AsgardApplication {
 
 
 
-	@KafkaListener(groupId = "consumergroup", topics = "asgard.openmrs.patient", containerFactory = "userKafkaListenerContainerFactory")
+	@KafkaListener(groupId = "odin23", topics = "asgard.openmrs.patient", containerFactory = "userKafkaListenerContainerFactory")
 	public List<User> patient(User patientsString) {
 		patientlist.add(patientsString);
 		return patientlist;
 	}
+	@Async
+	@KafkaListener(groupId = "odin23", topics = "asgard.openmrs.event_records", containerFactory = "userKafkaListenerContainerFactory")
+	public List<User> orders(User event) {
+	//	lock3 =1;
+		String uuString = event.getObject().substring(28,28+36);
+		event.setTest(uuString);
+		System.out.println(event);
+		List <ResPartner> temp = respartnerService.findbyuuid(event.getTest());
+		if(!temp.isEmpty()){
+			System.out.println(temp.get(0));
+			list.add(temp.get(0));
+			lock2 =0;
+		}
+		else{
+			lock3 = 0;
+		}
+		System.out.println(list.size());
 
-
-	@KafkaListener(groupId = "consumergroup", topics = "asgard.openmrs.orders", containerFactory = "userKafkaListenerContainerFactory")
-	public List<User> orders(User orderssString) {
-		orderslist.add(orderssString);
+		orderslist.add(event);
 		return orderslist;
 	}
-
-	@KafkaListener(groupId = "javatechie-2", topics = "asgard.openmrs.person", containerFactory = "userKafkaListenerContainerFactory")
+	@KafkaListener(groupId = "odin23", topics = "asgard.openmrs.person", containerFactory = "userKafkaListenerContainerFactory")
 	public List<User> getJsonMsgFromTopic(User user) {
-		userFromTopic.add(user);
+		while(lock3==1 ){
+			System.out.println("waiting on something");
+
+		}
+			userFromTopic.add(user);
+			ResPartnerClass temp = new ResPartnerClass();
+			temp.setPeresonid(user.getPerson_id());
+			temp.setUuid(user.getUuid());
+			resp.add(temp);
+		lock2= 0;
+		lock3 = 1;
 		return userFromTopic;
 	}
+	@KafkaListener(groupId = "odin23", topics = "asgard.openmrs.person_name", containerFactory = "userKafkaListenerContainerFactory")
+	public void respatnerlistener(User user) {
+		int counter = 10000;
+		while(lock2==1 && counter>5){
+			System.out.println("waiting index");
+			counter--;
 
-	@KafkaListener(groupId = "consumergroup", topics = "asgard.openmrs.person_name", containerFactory = "userKafkaListenerContainerFactory")
-	public List<ResPartnerClass> respatnerlistener(User user) {
-		ResPartnerClass temp = new ResPartnerClass();
-		String name;
-		name = user.getGiven_name() +" "+ user.getMiddle_name()+" "+user.getFamily_name();
-		temp.setPeresonid(user.getPerson_id());
-		temp.setDisplay_name(name);
-		temp.setName(name);
-		temp.setUuid(user.getUuid());
-		Integer idInteger = FindId(respartnerService.findAllEmployee(), user.getUuid());
-		if(idInteger!=0){
-			temp.setId(idInteger);
-			ResPartner ResInsert = new ResPartner(temp);
-			save(ResInsert);
 		}
 
-		resp.add(temp);
-		return resp;
+		System.out.println("indices note me"+user);
+
+		//check if record exists and update name
+		System.out.println("list size"+list.size());
+
+		if(!list.isEmpty()){
+			System.out.println("found in database");
+			System.out.println("here here"+user);
+			System.out.println("here here"+list.size());
+			ResPartnerClass temp2 = new ResPartnerClass();
+			System.out.println(list.get(0).getUuid());
+			String name  = user.getGiven_name() +" "+ user.getMiddle_name()+" "+user.getFamily_name();
+			temp2.setDisplay_name(name+" "+"["+ list.get(0).getRef()+"]");
+			temp2.setId(list.get(0).getId());
+			temp2.setName(name);
+			temp2.setUuid(list.get(0).getUuid());
+			ResPartner ResInsert = new ResPartner(temp2);
+			save(ResInsert);
+			resp.add(temp2);
+			list.clear();
+	}else{
+		System.out.println("indices");
+				//for database insert
+				for ( int j =0 ; j < resp.size();j++ ){
+					System.out.println("indices");
+					if(Objects.equals(resp.get(j).getPeresonid(), user.getPerson_id())){
+						String name = user.getGiven_name() +" "+ user.getMiddle_name()+" "+user.getFamily_name();
+						resp.get(j).setPeresonid(user.getPerson_id());
+						resp.get(j).setDisplay_name(name);
+						resp.get(j).setName(name);
+						System.out.println(resp.get(j).getUuid());	
+					}
+					}
+					lock = 0;
+	}
+		
+		lock2 =1;
+		System.out.println("done");
+
 	}
 
-
-	@KafkaListener(groupId = "consumergroup", topics = "asgard.openmrs.patient_identifier", containerFactory = "userKafkaListenerContainerFactory")
-	public List<ResPartnerClass> patientidentifier(User user) {
+	@KafkaListener(groupId = "odin23", topics = "asgard.openmrs.patient_identifier", containerFactory = "userKafkaListenerContainerFactory")
+	public void patientidentifier(User user) {
+		int counter =1000;
+		while(lock ==1 && counter >5){
+			System.out.println("waiting");
+			counter--;
+		}
+		if( !resp.isEmpty()){
 
 		for (int i = 0; i < resp.size(); i++) {
-			if( Objects.equals(user.getPatient_id(), resp.get(i).getPeresonid())){
-				resp.get(i).setRef(user.getIdentifier());
-				resp.get(i).setDisplay_name(resp.get(i).getName()+" "+"["+ user.getIdentifier()+"]");
-
-
-				ResPartner ResInsert = new ResPartner(resp.get(i));
-				save(ResInsert);
-
+			System.out.println(user.getPatient_id());
+			System.out.println("checkme"+user.getIdentifier().substring(0,1));
 			
-			}
+
+				if( Objects.equals(user.getPatient_id(), resp.get(i).getPeresonid()) && !"N".equals(user.getIdentifier().substring(0,1)) ){
+					resp.get(i).setRef(user.getIdentifier());
+					resp.get(i).setDisplay_name(resp.get(i).getName()+" "+"["+ user.getIdentifier()+"]");
 	
-			else{
-				System.out.println("could not find index");
+	
+					ResPartner ResInsert = new ResPartner(resp.get(i));
+					save(ResInsert);	
+	
+				}
 			}
-		  }
-		return resp;
+
+		}
+			else{
+				System.out.println("could not ");
+			}
+		  
+		  lock =1;
+
+		
 	}
 
 

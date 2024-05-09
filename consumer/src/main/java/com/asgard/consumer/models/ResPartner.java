@@ -237,6 +237,7 @@ public ResPartner(ResPartnerClass res){
     this.name = res.getName();
     this.display_name= res.getDisplay_name();
     this.ref =  res.getRef();
+    this.uuid = res.getUuid();
    
     this.company_id = 1;
     this.country_id = 134;

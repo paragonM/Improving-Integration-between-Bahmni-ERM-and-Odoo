@@ -18,5 +18,7 @@ public class User {
 	private String uuid;
 	private String patient_id;
 	private String identifier;
+	private String object;
+	private String test;
 
 }
