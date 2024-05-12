@@ -1,3 +1,0 @@
-Bahmni intends to cover a hospital's complete use case, e.g. by including Odoo (formerly OpenERP) for billing and pharmacy stock management, rather than just the EMR component.
-
-Relies on use of the Event Module and REST Module. The Atomfeed module hooks into events in openmrs via the Event module. The atomfeed module provides links back to the object changed as webservices.rest urls.

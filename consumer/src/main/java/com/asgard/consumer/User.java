@@ -20,5 +20,6 @@ public class User {
 	private String identifier;
 	private String object;
 	private String test;
+	private String category;
 
 }

@@ -1,2 +1,0 @@
-src/main/java/org/openlmis/requisition/dto/ApproveRequisitionDTO.java
-C:\Users\user\Desktop\specialtopicassignment\openlmis-requisition\src\main\resources\api-definition.yaml

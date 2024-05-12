@@ -1,9 +1,0 @@
-https://wiki.openmrs.org/display/docs/Event+Module
-
-echnical Documentation
-Possible Actions
-An enum on Event.Action contains the possible actions of CREATED, UPDATED, RETIRED, UNRETIRED, VOIDED, UNVOIDED, PURGED
-
-Registering module domain objects for which to fire events
-The module's domain objects must be subclasses of OpenmrsObject.
-If you wish for retired/unretired or voided/unvoided events to be fired, they should implement Retireable or Voidable respectively.
